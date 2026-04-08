@@ -25,6 +25,9 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      - name: Create auth folder
+        run: mkdir -p auth
+
       - name: Run Playwright Tests
         run: TEST_ENV=qa npx playwright test
         env:
