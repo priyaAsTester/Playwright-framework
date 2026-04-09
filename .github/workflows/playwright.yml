@@ -31,35 +31,27 @@ jobs:
         env:
           USERNAME: ${{ secrets.USERNAME1 }}
 
-      # ✅ FIX 4: Run ONLY the setup project to generate auth.json
-      # Using --project=setup ensures only auth.setup.spec.js runs here.
-      # The main test run below will re-run setup automatically via
-      # `dependencies: ['setup']` in the config, but running it explicitly
-      # first gives a clear failure point if auth itself breaks.
-      - name: Generate Auth
-        run: npx playwright test --project=setup
+      # ✅ FIX 4: Single test command — config's `dependencies: ['setup']` ensures
+      # auth.setup.spec.js runs first and writes auth.json before any browser project starts.
+      # No separate auth step needed — and avoids the "project not found" error
+      # that occurs if the old config without the setup project is still in the repo.
+      - name: Run Tests
+        run: npx playwright test
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           USERNAME: ${{ secrets.USERNAME1 }}
           PASSWORD: ${{ secrets.PASSWORD }}
 
-      # ✅ FIX 5: Verify auth.json was actually written before proceeding
+      # ✅ FIX 5: Verify auth.json was written (runs after tests, useful for debugging)
       - name: Verify auth.json exists
+        if: always()
         run: |
           if [ ! -f "./auth.json" ]; then
-            echo "❌ auth.json was NOT generated. Aborting."
-            exit 1
+            echo "❌ auth.json was NOT generated."
+          else
+            echo "✅ auth.json found:"
+            cat ./auth.json | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Cookies count: {len(d[\"cookies\"])}')"
           fi
-          echo "✅ auth.json found:"
-          cat ./auth.json | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Cookies count: {len(d[\"cookies\"])}')"
-
-      # ✅ Run all tests (setup dependency in config ensures auth is loaded)
-      - name: Run Tests
-        run: npx playwright test --project=chromium --project=firefox --project=webkit
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-          USERNAME: ${{ secrets.USERNAME1 }}
-          PASSWORD: ${{ secrets.PASSWORD }}
 
       # ✅ FIX 6: Always upload the HTML report so you can debug failures
       - name: Upload Playwright Report

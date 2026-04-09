@@ -18,23 +18,41 @@ export default defineConfig({
     baseURL: process.env.BASE_URL,
     headless: true,
     trace: 'on-first-retry',
-    //storageState:'auth.json'
+    // ✅ FIX 1: Use an absolute-safe relative path consistent with rootDir
     storageState: './auth.json',
-      
   },
 
   projects: [
+    // ✅ FIX 2: Dedicated setup project — runs auth BEFORE any test project
+    {
+      name: 'setup',
+      testMatch: /.*auth\.setup\.spec\.js/,
+      // No storageState here — this project CREATES the auth file
+      use: { storageState: undefined },
+    },
+
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        // storageState is inherited from global `use` above
+      },
+      // ✅ FIX 3: Declare explicit dependency so auth always runs first
+      dependencies: ['setup'],
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+      },
+      dependencies: ['setup'],
     },
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    }
+      use: {
+        ...devices['Desktop Safari'],
+      },
+      dependencies: ['setup'],
+    },
   ],
 });
