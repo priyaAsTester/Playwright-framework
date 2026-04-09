@@ -9,12 +9,16 @@ const{Dashboard}=require('../pages/Dashboard')
 
 //test.use({storageState:'auth.json'})
 test.use({ storageState: 'auth.json' });
-test('verifying Logout',async({page})=>{
-const dashboardPage=new Dashboard(page)
-await page.goto('/secure')
-console.log(page.url());
 
-await expect(page).toHaveURL('/secure')
-await dashboardPage.Logout();
+test('verifying Logout', async ({ page }) => {
+  const dashboardPage = new Dashboard(page);
 
-})
+  await page.goto('/secure');
+
+  await expect(page).toHaveURL(/.*\/secure/);
+
+  await dashboardPage.logout();
+
+  await expect(page).toHaveURL(/.*\/login/);
+});
+
