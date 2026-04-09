@@ -25,12 +25,17 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Create auth folder
-        run: mkdir -p auth
-
-      - name: Run Playwright Tests
-        run: TEST_ENV=qa npx playwright test
-        env:
+      - name: Run Auth Setup
+  run: TEST_ENV=qa npx playwright test tests/setup/auth.setup.spec.js
+  env:
+    BASE_URL: ${{ secrets.BASE_URL }}
+    USERNAME: ${{ secrets.USERNAME }}
+    PASSWORD: ${{ secrets.PASSWORD }}
+    
+    -run:ls
+-name: Run Playwright Tests
+run: TEST_ENV=qa npx playwright test
+env:
           BASE_URL: ${{ secrets.BASE_URL }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
