@@ -33,7 +33,7 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           USERNAME: ${{ secrets.USERNAME1 }}
           PASSWORD: ${{ secrets.PASSWORD }}
-
+        
       # ✅ STEP 2: Run actual tests
       - name: Run Playwright Tests
         run: npx playwright test
@@ -41,7 +41,8 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
-
+          
+        run: ls -la
       # ✅ OPTIONAL (VERY USEFUL): Upload report
       - name: Upload HTML Report
         if: always()
