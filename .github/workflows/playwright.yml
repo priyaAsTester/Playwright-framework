@@ -5,6 +5,7 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -24,24 +25,56 @@ jobs:
       - name: Install browsers
         run: npx playwright install --with-deps
 
-      # ✅ DEBUG STEP (CORRECT PLACE)
+      # ✅ DEBUG STEP — verify secret is injected (value stays masked)
       - name: Debug user
         run: echo "Running as $USERNAME"
         env:
           USERNAME: ${{ secrets.USERNAME1 }}
 
-      # ✅ Auth step
+      # ✅ FIX 4: Run ONLY the setup project to generate auth.json
+      # Using --project=setup ensures only auth.setup.spec.js runs here.
+      # The main test run below will re-run setup automatically via
+      # `dependencies: ['setup']` in the config, but running it explicitly
+      # first gives a clear failure point if auth itself breaks.
       - name: Generate Auth
-        run: npx playwright test tests/setup/auth.setup.spec.js
+        run: npx playwright test --project=setup
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           USERNAME: ${{ secrets.USERNAME1 }}
           PASSWORD: ${{ secrets.PASSWORD }}
 
-      # ✅ Run tests
+      # ✅ FIX 5: Verify auth.json was actually written before proceeding
+      - name: Verify auth.json exists
+        run: |
+          if [ ! -f "./auth.json" ]; then
+            echo "❌ auth.json was NOT generated. Aborting."
+            exit 1
+          fi
+          echo "✅ auth.json found:"
+          cat ./auth.json | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Cookies count: {len(d[\"cookies\"])}')"
+
+      # ✅ Run all tests (setup dependency in config ensures auth is loaded)
       - name: Run Tests
-        run: npx playwright test
+        run: npx playwright test --project=chromium --project=firefox --project=webkit
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           USERNAME: ${{ secrets.USERNAME1 }}
           PASSWORD: ${{ secrets.PASSWORD }}
+
+      # ✅ FIX 6: Always upload the HTML report so you can debug failures
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      # ✅ BONUS: Upload auth.json as artifact for debugging auth issues
+      - name: Upload auth.json (debug)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: auth-state
+          path: auth.json
+          retention-days: 3
