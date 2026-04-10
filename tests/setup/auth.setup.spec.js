@@ -1,4 +1,4 @@
-import { test as setup } from '@playwright/test';
+import { test as setup , expect} from '@playwright/test';
 
 setup('login and save state', async ({ page }) => {
   await page.goto('/login');
@@ -8,7 +8,9 @@ setup('login and save state', async ({ page }) => {
   await page.click('button[type="submit"]');
 
   await page.waitForURL('https://the-internet.herokuapp.com/secure');
-
+  //await page.waitForURL('https://the-internet.herokuapp.com/secure');
+ await expect(page).toHaveURL('https://the-internet.herokuapp.com/secure'); 
+console.log(page.url())
 
   // Save login session
   await page.context().storageState({ path: 'auth.json' });

@@ -10,7 +10,7 @@ await loginPage.verifyLogin("tomsmith","SuperSecretPassword!");
 await loginPage.verifyUrl();
 const message= await loginPage.verifyingSucessText();
 expect(message).toContain(MESSAGES.LOGIN_SUCCESS)
-console.log(process.env.USERNAME)
+console.log(process.env.USERNAME1)
 console.log(process.env.PASSWORD)
 
 })

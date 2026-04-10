@@ -3,13 +3,13 @@ class Dashboard{
     constructor(page){
 
         this.page=page;
-        this.logout=page.getByRole('link',{name:'logout'})
+        this.logoutLink=page.getByRole('link',{name:'logout'})
   
 
     }
 
     async Logout(){
-        await this.logout.click();
+        await this.logoutLink.click();
     }
 
 }
