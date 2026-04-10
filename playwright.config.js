@@ -16,7 +16,7 @@ export default defineConfig({
 
   use: {
     baseURL: process.env.BASE_URL,
-    headless: true,
+    headless: false,
     trace: 'on-first-retry',
   },
 
@@ -24,31 +24,31 @@ export default defineConfig({
     {
       name: 'setup',
       testMatch: /.*auth\.setup\.spec\.js/,
-      use: { storageState: undefined },
+      //use: { storageState:undefined },
     },
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'auth.json', // ✅ add here
+      //  storageState: 'auth.json', // ✅ add here
       },
-      dependencies: ['setup'],
+      //dependencies: ['setup'],
     },
     {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
-        storageState: 'auth.json', // ✅ add here
+        //storageState: 'auth.json', // ✅ add here
       },
-      dependencies: ['setup'],
+      //dependencies: ['setup'],
     },
     {
       name: 'webkit',
       use: {
         ...devices['Desktop Safari'],
-        storageState: 'auth.json', // ✅ add here
+       // storageState: 'auth.json', // ✅ add here
       },
-      dependencies: ['setup'],
+      //dependencies: ['setup'],
     },
   ],
 });
