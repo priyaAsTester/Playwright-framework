@@ -1,30 +1,12 @@
-//const { test, expect } = require('@playwright/test');
-const{test,expect}=require('../fixtures/baseTest')
-const { Dashboard } = require('../pages/Dashboard');
+const { test, expect } = require('../fixtures/baseTest');
 
-
-
-// test('verifying Logout', async ({ page }) => {
+test('verifying Logout', async ({ loggedInPage }) => {
+  // loggedInPage ensures the user is authenticated and can run independently
+  // The test automatically logs in before running, ensuring reliable auth
   
+  await expect(loggedInPage.page).toHaveURL(/.*\/secure/);
 
-//   await page.goto('https://the-internet.herokuapp.com/secure');
-//   await expect(page).toHaveURL(/.*\/secure/);
-
-//   const dashboardPage = new Dashboard(page);
-//   await dashboardPage.Logout();
-
-//   await expect(page).toHaveURL(/.*\/login/);
-// });
-
-test("verifying logout",async({loggedInPage,page})=>{
-  await page.goto('https://the-internet.herokuapp.com/secure');
-  await expect(page).toHaveURL(/.*\/secure/);
-
-  // const dashboardPage = new Dashboard(page);
   await loggedInPage.dashboardPage.Logout();
 
-  await expect(page).toHaveURL(/.*\/login/);
-
-
-
-})
+  await expect(loggedInPage.page).toHaveURL(/.*\/login/);
+});

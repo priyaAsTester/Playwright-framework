@@ -23,32 +23,31 @@ export default defineConfig({
   projects: [
     {
       name: 'setup',
-      testMatch: /.*auth\.setup\.spec\.js/,
-      //use: { storageState:undefined },
+      testMatch: /.*\.setup\.js/,
     },
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-      //  storageState: 'auth.json', // ✅ add here
+        storageState: './auth.json',
       },
-      //dependencies: ['setup'],
+      dependencies: ['setup'],
     },
     {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
-        //storageState: 'auth.json', // ✅ add here
+        storageState: './auth.json',
       },
-      //dependencies: ['setup'],
+      dependencies: ['setup'],
     },
     {
       name: 'webkit',
       use: {
         ...devices['Desktop Safari'],
-       // storageState: 'auth.json', // ✅ add here
+       storageState: './auth.json',
       },
-      //dependencies: ['setup'],
+      dependencies: ['setup'],
     },
   ],
 });

@@ -13,6 +13,7 @@ expect(message).toContain(MESSAGES.LOGIN_SUCCESS)
 console.log(process.env.USERNAME1)
 console.log(process.env.PASSWORD)
 
+
 })
 
 
