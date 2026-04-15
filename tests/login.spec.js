@@ -4,7 +4,7 @@ const user=require('../test-data/users.json');
 const {MESSAGES}=require('../utils/constants');
 
 
-test('verifying Homepage',async({loginPage})=>{
+test('@smoke verifying Homepage',async({loginPage})=>{
 await loginPage.goTo();
 await loginPage.verifyLogin("tomsmith","SuperSecretPassword!");
 await loginPage.verifyUrl();

@@ -1,6 +1,6 @@
 const { test, expect } = require('../fixtures/baseTest');
 
-test('verifying Logout', async ({ loggedInPage }) => {
+test('@ regressionverifying Logout', async ({ loggedInPage }) => {
   // loggedInPage ensures the user is authenticated and can run independently
   // The test automatically logs in before running, ensuring reliable auth
   

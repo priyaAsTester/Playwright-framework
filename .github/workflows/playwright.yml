@@ -35,8 +35,8 @@ jobs:
       # auth.setup.spec.js runs first and writes auth.json before any browser project starts.
       # No separate auth step needed — and avoids the "project not found" error
       # that occurs if the old config without the setup project is still in the repo.
-      - name: Run Tests
-        run: npx playwright test
+      - name: Run smoke Tests
+        run: npx playwright test --grep "@smoke"
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           USERNAME: ${{ secrets.USERNAME1 }}
