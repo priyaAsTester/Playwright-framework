@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: playwright-report/
           retention-days: 14
 
@@ -71,6 +71,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: auth-state
+          name: auth-state-${{ matrix.shard }}
           path: auth.json
           retention-days: 3
