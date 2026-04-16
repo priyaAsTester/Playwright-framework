@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         shard: [1, 2]
-        totalShards: 2
+        totalShards: [2]
 
     steps:
       - name: Checkout code
