@@ -12,7 +12,8 @@ jobs:
 
     strategy:
       matrix:
-        shard: [1/2, 2/2] 
+        shard: [1, 2]
+        totalShards: 2
 
     steps:
       - name: Checkout code
@@ -40,7 +41,7 @@ jobs:
       # No separate auth step needed — and avoids the "project not found" error
       # that occurs if the old config without the setup project is still in the repo.
       - name: Run tests (sharded)
-        run: npx playwright test --shard=${{ matrix.shard }} --grep "@smoke"
+        run: npx playwright test --shard=${{ matrix.shard }}/${{ matrix.totalShards }} --grep "@smoke"
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           USERNAME: ${{ secrets.USERNAME1 }}
