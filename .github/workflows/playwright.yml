@@ -67,6 +67,12 @@ jobs:
           path: playwright-report/
           retention-days: 14
 
+      - name: Upload Allure Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.shard }}
+          path: allure-results
+
       # ✅ BONUS: Upload auth.json as artifact for debugging auth issues
       - name: Upload auth.json (debug)
         uses: actions/upload-artifact@v4
@@ -75,3 +81,38 @@ jobs:
           name: auth-state-${{ matrix.shard }}
           path: auth.json
           retention-days: 3
+          allure-report:
+  needs: test
+  runs-on: ubuntu-latest
+
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+
+    - run: npm ci
+
+    # Install Allure CLI
+    - run: npm install -g allure-commandline
+
+    # Download all shard results
+    - name: Download Allure Results
+      uses: actions/download-artifact@v4
+      with:
+        path: allure-results-all
+
+    # Merge results
+    - name: Generate Allure Report
+      run: |
+        mkdir merged-results
+        cp -r allure-results-all/*/* merged-results || true
+        allure generate merged-results -o allure-report --clean
+
+    # Upload final report
+    - name: Upload Allure Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-report
+        path: allure-report

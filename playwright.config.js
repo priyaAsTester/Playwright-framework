@@ -12,12 +12,14 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
 
-  reporter: 'html',
-
+  reporter:[ ['html'],  ['allure-playwright']],
   use: {
     baseURL: process.env.BASE_URL,
     headless: true,
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+
   },
 
   projects: [
